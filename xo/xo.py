@@ -48,7 +48,8 @@ class _XOGame(_XOTable):
         pass
 
     def __init__(self, player1: _Player, player2: _Player) -> None:
-        pass
+        self.player1, self.player2, self.table = player1, player2, _XOTable()
+        self.scores, self.rounds = {self.player1: 0, self.player2: 0}, 0
 
     def _calculate_result(self):
         pass
@@ -57,4 +58,7 @@ class _XOGame(_XOTable):
         pass
 
     def winner(self) -> Optional[_Player]:
-        pass
+        if None in self.table.xo_map.values() or self.rounds < 5:
+            raise self.UnFinishedGameError("The Game has not Finished yet!...")
+        if len(set(self.scores.values())) != 1:
+            return self.player1 if self.scores[self.player1] > self.scores[self.player2] else self.player2
