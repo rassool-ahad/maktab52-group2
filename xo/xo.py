@@ -52,7 +52,12 @@ class _XOGame(_XOTable):
         self.scores, self.rounds = {self.player1: 0, self.player2: 0}, 0
 
     def _calculate_result(self):
-        pass
+        win_list = ["123", "456", "789", "147", "258", "369", "159", "357"]
+        for item in win_list:
+            value_list = [self.xo_map[int(index)] for index in item if self.xo_map[int(index)]]
+            if "".join(value_list) == "xxx" or "".join(value_list) == "ooo":
+                return True
+        return False
 
     def mark(self, cell_no, player: Union[_Player, Literal['x', 'o'], int]):
         if 1 > cell_no > 9:
