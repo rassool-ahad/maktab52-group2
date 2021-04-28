@@ -78,4 +78,23 @@ class _XOGame(_XOTable):
         if len(set(self.scores.values())) != 1:
             return self.player1 if self.scores[self.player1] > self.scores[self.player2] else self.player2
 
-print("rezaaaaaaAaaaaa")
+player1_name = input("Please Enter Your Name:")
+player1_sign = input("Please Enter Your Sign:")
+player1 = _Player(player1_name, player1_sign)
+player2_name = input("Please Enter Your Name:")
+player2_sign = input("Please Enter Your Sign:")
+player2 = _Player(player1_name, player2_sign)
+
+winner_dict = {player1: 0, player2: 0}
+for i in range(3):
+    game = _XOGame(player1, player2)
+    while winner != False:
+        turn = input("Please Enter A Cell Number and Your Mark:")
+        num, sign = turn.split(" ")
+        game.mark(num, sign)
+        winner = game.winner()
+    if isinstance(winner, _Player):
+        winner_dict[winner] += 1
+
+winner_dict_reverse = {v: k for k, v in winner_dict.items()}
+print(f"The Winner IS: {winner_dict_reverse[sorted(winner_dict_reverse.keys())[0]]}")
