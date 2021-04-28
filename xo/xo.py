@@ -55,10 +55,22 @@ class _XOGame(_XOTable):
         pass
 
     def mark(self, cell_no, player: Union[_Player, Literal['x', 'o'], int]):
-        pass
+        if 1 > cell_no > 9:
+            raise self.InvalidCellError(cell_no, "cell number is invalid")
+        if player == "x" or player == "o" or player == "X" or player == "O":
+            player = self.player1 if self.player1.sign == player else self.player2
+        elif player == 0 or player == 1:
+            player = self.player1 if player == 0 else self.player2
+        elif isinstance(player, _Player) is False:
+            raise self.InvalidPlayer(player1, "invalid player")
+        table = _XOTable()
+        table.mark(cell_no, player.sign)
+        print(table)
 
+        
     def winner(self) -> Optional[_Player]:
         if None in self.table.xo_map.values() or self.rounds < 5:
             raise self.UnFinishedGameError("The Game has not Finished yet!...")
         if len(set(self.scores.values())) != 1:
             return self.player1 if self.scores[self.player1] > self.scores[self.player2] else self.player2
+
