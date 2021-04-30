@@ -66,9 +66,11 @@ class _XOGame(_XOTable):
             raise self.InvalidCellError(cell_no, "cell number is invalid")
         if player == "x" or player == "o" or player == "X" or player == "O":
             player = self.player1 if self.player1.sign == player.lower() else self.player2  # lower sign player
-        elif player == 0 or player == 1:
-            player = self.player1 if player == 0 else self.player2
-        elif isinstance(player, _Player) is False:
+        elif player == '1' or player == '2': #number 1 & 2 must be string because may be xo
+            player = self.player1 if player == '1' else self.player2
+        elif player == self.player1.name or player == self.player2.name: #get player with name
+            player = self.player1 if player == self.player1.name else self.player2
+        else:
             raise self.InvalidPlayer(player, "invalid player")
         self.table.mark_update(cell_no, player.sign)  # table is self attribute so table change to self.table
         print(self.table)
@@ -97,11 +99,15 @@ for game_round in range(3):
     game[game_round], winner = _XOGame(player1, player2), False  # winner before loop must defined
     turn_player = player1
     while winner == False:  # winner is None and not equal players
-        turn = input(f"Its {turn_player.name} turn: Please Enter A Cell Number and Your Mark:")
-        num, sign = turn.split(" ")
+        turn = input(f"Please Enter A Cell Number and Your Mark(Just Cell Number for {turn_player.name} turn):")
+        try: #get cell number and player
+            num, sign = turn.split(" ")
+        except: #get just cell number for suggested player
+            num = turn
+            sign = turn_player.sign
         try:  # handeling exceptions in mark method
             game[game_round].mark(int(num), sign)  # cell_no must be integer not string
-            turn_player = player1 if turn_player == player2 else player2
+            if ' ' not in turn: turn_player = player1 if turn_player == player2 else player2 #change turn if current turn
         except:
             print('\nTry Again...!\n')
 
