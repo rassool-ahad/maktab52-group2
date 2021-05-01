@@ -1,8 +1,8 @@
-from typing import Literal, Union, Optional, List
+from typing import Literal, Union, List
 
 
 class _Player:
-    def __init__(self, name: str, sign: Literal['x', 'o']) -> None:
+    def __init__(self, name: str, sign: Union[str, Literal['x', 'o']]) -> None:
         self.name = name
         self.sign = sign
 
@@ -66,16 +66,16 @@ class _XOGame(_XOTable):
             raise self.InvalidCellError(cell_no, "cell number is invalid")
         if player == "x" or player == "o" or player == "X" or player == "O":
             player = self.player1 if self.player1.sign == player.lower() else self.player2  # lower sign player
-        elif player == '1' or player == '2': #number 1 & 2 must be string because may be xo
+        elif player == '1' or player == '2':  # number 1 & 2 must be string because may be xo
             player = self.player1 if player == '1' else self.player2
-        elif player == self.player1.name or player == self.player2.name: #get player with name
+        elif player == self.player1.name or player == self.player2.name:  # get player with name
             player = self.player1 if player == self.player1.name else self.player2
         else:
             raise self.InvalidPlayer(player, "invalid player")
         self.table.mark_update(cell_no, player.sign)  # table is self attribute so table change to self.table
         print(self.table)
 
-    def winner(self):  # -> Optional[_Player]:
+    def winner(self):
         res = self._calculate_result()  # res = 'x' or res = 'o' or res = ''
         # if not res and None in self.table.xo_map.values():  # check winner before end game round raise Exception
         #     raise self.UnFinishedGameError("The Game has not Finished yet!...")
@@ -97,24 +97,24 @@ winner_dict = {player1: 0, player2: 0}
 game: List[any] = [None for i in range(3)]
 for game_round in range(3):
     game[game_round], winner = _XOGame(player1, player2), False  # winner before loop must defined
-    turn_player = player1
-    while winner == False:  # winner is None and not equal players
-        turn = input(f"Please Enter A Cell Number and Your Mark(Just Cell Number for {turn_player.name} turn):")
-        try: #get cell number and player
+    turn_player = player1 if not game_round % 2 else player2  # Change First Player Every Round
+    while winner is False:  # winner is None and not equal players
+        turn = input(f"Please Enter A Cell Number and Your Mark(Or Just Cell Number for {turn_player.name} turn):")
+        try:  # get cell number and player
             num, sign = turn.split(" ")
-        except: #get just cell number for suggested player
+        except:  # get just cell number for suggested player
             num = turn
             sign = turn_player.sign
-        try:  # handeling exceptions in mark method
+        try:  # handling exceptions in mark method
             game[game_round].mark(int(num), sign)  # cell_no must be integer not string
-            if ' ' not in turn: turn_player = player1 if turn_player == player2 else player2 #change turn if current turn
+            turn_player = player1 if turn_player == player2 else player2  # change turn if current turn
         except:
             print('\nTry Again...!\n')
 
         try:  # winner = player1 or player2
             winner = game[game_round].winner()
         except:
-            pass  # handeling UnFinishedGameError and winner is None yet
+            pass  # handling UnFinishedGameError and winner is None yet
 
     if isinstance(winner, _Player):
         winner_dict[winner] += 1
